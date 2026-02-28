@@ -1,0 +1,96 @@
+{
+    "name": "ClientRequest",
+    "type": "object",
+    "properties": {
+        "business_name": {
+            "type": "string"
+        },
+        "industry": {
+            "type": "string"
+        },
+        "target_audience": {
+            "type": "string"
+        },
+        "website_type": {
+            "type": "string",
+            "enum": [
+                "Portfolio",
+                "E-commerce",
+                "Blog",
+                "SaaS",
+                "Corporate",
+                "Custom"
+            ]
+        },
+        "design_preference": {
+            "type": "string",
+            "enum": [
+                "Modern",
+                "Minimal",
+                "Dark",
+                "Corporate",
+                "Playful",
+                "Luxury"
+            ]
+        },
+        "reference_urls": {
+            "type": "string"
+        },
+        "required_pages": {
+            "type": "string"
+        },
+        "features_needed": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "budget_range": {
+            "type": "string",
+            "enum": [
+                "< $1,000",
+                "$1,000\u2013$3,000",
+                "$3,000\u2013$7,000",
+                "$7,000\u2013$15,000",
+                "$15,000+"
+            ]
+        },
+        "deadline": {
+            "type": "string",
+            "format": "date"
+        },
+        "contact_name": {
+            "type": "string"
+        },
+        "contact_email": {
+            "type": "string"
+        },
+        "contact_phone": {
+            "type": "string"
+        },
+        "additional_notes": {
+            "type": "string"
+        },
+        "file_url": {
+            "type": "string"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "New",
+                "In Progress",
+                "Completed",
+                "On Hold"
+            ],
+            "default": "New"
+        },
+        "revenue": {
+            "type": "number"
+        }
+    },
+    "required": [
+        "business_name",
+        "contact_email",
+        "website_type"
+    ]
+}

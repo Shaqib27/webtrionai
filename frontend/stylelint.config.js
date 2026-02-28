@@ -1,0 +1,9 @@
+// stylelint.config.js
+module.exports = {
+    extends: ['stylelint-config-standard', 'stylelint-config-tailwindcss'],
+    rules: {
+        'at-rule-no-unknown': [true, {
+            ignoreAtRules: ['apply', 'tailwind', 'screen', 'responsive', 'variants'],
+        }],
+    },
+};

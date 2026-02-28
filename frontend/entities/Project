@@ -1,0 +1,52 @@
+{
+    "name": "Project",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "tech_stack": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "live_url": {
+            "type": "string"
+        },
+        "screenshot_url": {
+            "type": "string"
+        },
+        "category": {
+            "type": "string",
+            "enum": [
+                "Portfolio",
+                "E-commerce",
+                "Blog",
+                "SaaS",
+                "Corporate",
+                "Custom"
+            ]
+        },
+        "client_name": {
+            "type": "string"
+        },
+        "client_testimonial": {
+            "type": "string"
+        },
+        "featured": {
+            "type": "boolean",
+            "default": false
+        },
+        "year": {
+            "type": "number"
+        }
+    },
+    "required": [
+        "title",
+        "description"
+    ]
+}

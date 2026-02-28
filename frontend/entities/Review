@@ -1,0 +1,30 @@
+{
+    "name": "Review",
+    "type": "object",
+    "properties": {
+        "client_name": {
+            "type": "string"
+        },
+        "company": {
+            "type": "string"
+        },
+        "rating": {
+            "type": "number"
+        },
+        "feedback": {
+            "type": "string"
+        },
+        "avatar_url": {
+            "type": "string"
+        },
+        "approved": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "required": [
+        "client_name",
+        "rating",
+        "feedback"
+    ]
+}
