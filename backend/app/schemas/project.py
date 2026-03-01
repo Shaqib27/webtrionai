@@ -1,5 +1,9 @@
 from pydantic import BaseModel
+from pydantic import BaseModel
 
+class ProjectStatusUpdate(BaseModel):
+    status: str
+    
 class ProjectBase(BaseModel):
     title: str
     category: str

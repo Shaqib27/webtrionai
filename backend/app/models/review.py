@@ -6,6 +6,7 @@ class Review(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     client_name = Column(String, nullable=False)
+    company = Column(String, nullable=True)
     rating = Column(Integer, nullable=False)
     feedback = Column(Text)
-    approved = Column(Boolean, default=False)
+    approved = Column(Boolean, default=True)

@@ -21,7 +21,7 @@ export default function HeroSection() {
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
                     <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2 mb-8 text-sm text-white/60">
                         <Sparkles className="w-3.5 h-3.5 text-violet-400" />
-                        Full-Stack Web Development Agency
+                        Building Scalable Web Platforms, Data Analytics & AI/ML Systems
                     </div>
                 </motion.div>
 
@@ -57,7 +57,19 @@ export default function HeroSection() {
                 {/* Floating tech badges */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
                     className="flex flex-wrap gap-3 justify-center mt-16">
-                    {["React", "Next.js", "Node.js", "Python", "PostgreSQL", "AWS", "Tailwind CSS", "TypeScript"].map((tech, i) => (
+                    {[
+                        "React",
+                        "Next.js",
+                        "FastAPI",
+                        "Python",
+                        "PostgreSQL",
+                        "Apache Spark",
+                        "Kafka",
+                        "Machine Learning & AI",
+                        "AWS Cloud",
+                        "Docker & CI/CD",
+                        "Tailwind CSS"
+                    ].map((tech, i) => (
                         <span key={tech} className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-white/30 text-xs font-medium">
                             {tech}
                         </span>

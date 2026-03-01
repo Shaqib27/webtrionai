@@ -1,176 +1,257 @@
 import React, { useState, useEffect } from "react";
-import { api } from "@/api/client";
 import { motion } from "framer-motion";
-import { Star, CheckCircle2, Loader2 } from "lucide-react";
 
 export default function Reviews() {
     const [reviews, setReviews] = useState([]);
-    const [submitted, setSubmitted] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState("");
+
     const [form, setForm] = useState({
         client_name: "",
         company: "",
-        rating: 5,
+        rating: 0,
         feedback: ""
     });
 
+    // 🔥 Load reviews
     useEffect(() => {
-        const fetchReviews = async () => {
+        const loadReviews = async () => {
             try {
-                const res = await api.get("/reviews?approved=true&limit=50");
-                setReviews(Array.isArray(res.data) ? res.data : []);
-            } catch (error) {
-                console.error("Error fetching reviews:", error);
-                setReviews([]);
+                const res = await fetch("http://localhost:8001/reviews/");
+                if (!res.ok) throw new Error("Failed to fetch reviews");
+                const data = await res.json();
+                setReviews(data);
+            } catch (err) {
+                console.error(err);
+                setError("Unable to load reviews.");
+            } finally {
+                setLoading(false);
             }
         };
 
-        fetchReviews();
+        loadReviews();
     }, []);
 
-    const avg =
-        reviews.length
+    // ⭐ Average rating
+    const average =
+        reviews.length > 0
             ? (
-                reviews.reduce((s, r) => s + (r.rating || 0), 0) /
+                reviews.reduce((acc, r) => acc + r.rating, 0) /
                 reviews.length
             ).toFixed(1)
-            : "—";
+            : 0;
 
+    // 🚀 Submit review (REAL TIME UPDATE)
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        setError("");
+
+        if (form.rating === 0) {
+            setError("Please select a rating.");
+            return;
+        }
+
+        setSubmitting(true);
 
         try {
-            await api.post("/reviews", { ...form, approved: false });
-            setSubmitted(true);
+            const res = await fetch("http://localhost:8001/reviews/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form)
+            });
+
+            if (!res.ok) throw new Error("Submission failed");
+
+            const newReview = await res.json();
+
+            // 🔥 Real-time update without refresh
+            setReviews(prev => [newReview, ...prev]);
+
+            setSuccess(true);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
             setForm({
                 client_name: "",
                 company: "",
-                rating: 5,
+                rating: 0,
                 feedback: ""
             });
-        } catch (error) {
-            console.error("Submit failed:", error);
-        }
 
-        setLoading(false);
+            setTimeout(() => setSuccess(false), 4000);
+
+        } catch (err) {
+            console.error(err);
+            setError("Something went wrong. Please try again.");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] text-white pt-28 pb-20 px-6">
-            <div className="max-w-5xl mx-auto">
+        <div className="min-h-screen bg-black text-white pt-32 px-6 pb-20">
 
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-16"
-                >
-                    <span className="text-xs font-semibold tracking-[0.3em] text-violet-400 uppercase mb-4 block">
-                        Testimonials
-                    </span>
+            {/* HEADER */}
+            <div className="text-center mb-16">
+                <p className="text-purple-500 tracking-widest">TESTIMONIALS</p>
+                <h1 className="text-5xl font-bold mt-3">Client Reviews</h1>
 
-                    <h1 className="text-5xl font-bold mb-4 bg-gradient-to-br from-white to-white/40 bg-clip-text text-transparent">
-                        Client Reviews
-                    </h1>
-
-                    <div className="flex items-center justify-center gap-3 mt-6">
-                        <div className="flex">
-                            {[...Array(5)].map((_, i) => (
-                                <Star
-                                    key={i}
-                                    className={`w-6 h-6 ${i < Math.round(Number(avg))
-                                            ? "text-amber-400 fill-amber-400"
-                                            : "text-white/20"
-                                        }`}
-                                />
-                            ))}
-                        </div>
-                        <span className="text-2xl font-bold text-white">{avg}</span>
-                        <span className="text-white/40">
+                {!loading && (
+                    <div className="flex justify-center items-center gap-3 mt-6">
+                        <span className="text-yellow-400 text-3xl">
+                            {"★".repeat(Math.round(Number(average)))}
+                        </span>
+                        <span className="text-2xl font-semibold">{average}</span>
+                        <span className="text-gray-400">
                             ({reviews.length} reviews)
                         </span>
                     </div>
-                </motion.div>
+                )}
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
-                    {reviews.map((r, i) => (
-                        <motion.div
-                            key={r.id || i}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.06 }}
-                            className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-violet-500/30 transition-colors"
+            {/* SUCCESS MESSAGE */}
+            {success && (
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="max-w-3xl mx-auto mb-8 p-4 bg-green-500/20 border border-green-500/40 rounded-xl text-green-400 text-center font-medium"
+                >
+                    ✅ Review submitted successfully! Thank you.
+                </motion.div>
+            )}
+
+            {/* ERROR MESSAGE */}
+            {error && (
+                <div className="max-w-3xl mx-auto mb-8 p-4 bg-red-500/20 border border-red-500/40 rounded-xl text-red-400 text-center">
+                    {error}
+                </div>
+            )}
+
+            {/* LOADING */}
+            {loading ? (
+                <div className="text-center text-gray-400">Loading reviews...</div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+                    {reviews.map((review) => (
+                        <div
+                            key={review.id}
+                            className="bg-gray-900 p-6 rounded-2xl border border-purple-700 hover:border-purple-500 transition"
                         >
-                            <div className="flex mb-3">
-                                {[...Array(5)].map((_, j) => (
-                                    <Star
-                                        key={j}
-                                        className={`w-4 h-4 ${j < r.rating
-                                                ? "text-amber-400 fill-amber-400"
-                                                : "text-white/20"
-                                            }`}
-                                    />
+                            {/* Stars */}
+                            <div className="flex items-center gap-1 mb-4">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <span
+                                        key={star}
+                                        className={`${star <= review.rating
+                                            ? "text-yellow-400"
+                                            : "text-gray-600"
+                                            } text-xl`}
+                                    >
+                                        ★
+                                    </span>
                                 ))}
                             </div>
 
-                            <p className="text-white/70 text-sm leading-relaxed mb-5">
-                                "{r.feedback}"
+                            <p className="text-gray-300 mb-6">
+                                "{review.feedback}"
                             </p>
 
-                            <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 font-bold text-sm">
-                                    {r.client_name?.[0]?.toUpperCase()}
+                            <div className="flex items-center gap-4">
+                                <div className="bg-purple-600 w-10 h-10 rounded-full flex items-center justify-center font-bold">
+                                    {review.client_name?.[0]}
                                 </div>
                                 <div>
-                                    <p className="text-white font-medium text-sm">
-                                        {r.client_name}
+                                    <p className="font-semibold">
+                                        {review.client_name}
                                     </p>
-                                    {r.company && (
-                                        <p className="text-white/30 text-xs">
-                                            {r.company}
+                                    {review.company && (
+                                        <p className="text-gray-400 text-sm">
+                                            {review.company}
                                         </p>
                                     )}
                                 </div>
                             </div>
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
+            )}
 
-                {/* Submit Review */}
-                <div className="max-w-xl mx-auto">
-                    <div className="text-center mb-10">
-                        <h2 className="text-2xl font-bold text-white mb-2">
-                            Share Your Experience
-                        </h2>
-                        <p className="text-white/40 text-sm">
-                            Your feedback helps us grow and improve.
-                        </p>
+            {/* FORM */}
+            <div className="max-w-3xl mx-auto bg-gray-900 p-8 rounded-2xl">
+                <h2 className="text-3xl font-bold mb-6">
+                    Share Your Experience
+                </h2>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input
+                            required
+                            type="text"
+                            placeholder="Your Name"
+                            value={form.client_name}
+                            onChange={e =>
+                                setForm({ ...form, client_name: e.target.value })
+                            }
+                            className="bg-gray-800 px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Company"
+                            value={form.company}
+                            onChange={e =>
+                                setForm({ ...form, company: e.target.value })
+                            }
+                            className="bg-gray-800 px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                        />
                     </div>
 
-                    {submitted ? (
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            className="text-center p-10 bg-white/5 rounded-2xl border border-white/10"
-                        >
-                            <CheckCircle2 className="w-12 h-12 text-violet-400 mx-auto mb-4" />
-                            <h3 className="text-white font-semibold text-lg mb-2">
-                                Thank you!
-                            </h3>
-                            <p className="text-white/40 text-sm">
-                                Your review is pending approval.
-                            </p>
-                        </motion.div>
-                    ) : (
-                        <form
-                            onSubmit={handleSubmit}
-                            className="bg-white/5 border border-white/10 rounded-2xl p-8 space-y-5"
-                        >
-                            {/* Form content unchanged */}
-                        </form>
-                    )}
-                </div>
+                    {/* Rating */}
+                    <div>
+                        <p className="text-gray-400 mb-2">Rating</p>
+                        <div className="flex gap-2 text-3xl">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <span
+                                    key={star}
+                                    onClick={() =>
+                                        setForm({ ...form, rating: star })
+                                    }
+                                    className={`cursor-pointer transition ${star <= form.rating
+                                        ? "text-yellow-400"
+                                        : "text-gray-600"
+                                        }`}
+                                >
+                                    ★
+                                </span>
+                            ))}
+                        </div>
+                    </div>
 
+                    <textarea
+                        required
+                        rows={4}
+                        placeholder="Tell us about your experience..."
+                        value={form.feedback}
+                        onChange={e =>
+                            setForm({ ...form, feedback: e.target.value })
+                        }
+                        className="w-full bg-gray-800 px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                    />
+
+                    <button
+                        type="submit"
+                        disabled={submitting}
+                        className={`w-full py-3 rounded-xl font-semibold transition
+                            ${submitting
+                                ? "bg-purple-600/50 cursor-not-allowed"
+                                : "bg-gradient-to-r from-purple-600 to-purple-500 hover:opacity-90"
+                            }`}
+                    >
+                        {submitting ? "Submitting..." : "Submit Review"}
+                    </button>
+                </form>
             </div>
         </div>
     );

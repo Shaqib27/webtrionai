@@ -1,14 +1,44 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Globe, ShoppingCart, LayoutDashboard, Smartphone, Zap, Shield } from "lucide-react";
+import { Globe, ShoppingCart, LayoutDashboard, Smartphone, Zap, Shield, Cpu, Brain, BarChart3, Database } from "lucide-react";
 
 const SERVICES = [
-    { icon: Globe, title: "Web Applications", desc: "Full-stack web apps built with React, Next.js, and modern backends. Scalable, fast, and SEO-ready.", color: "violet" },
-    { icon: ShoppingCart, title: "E-commerce Stores", desc: "High-converting online stores with payment gateways, inventory management, and analytics.", color: "indigo" },
-    { icon: LayoutDashboard, title: "SaaS Platforms", desc: "End-to-end SaaS development with auth, billing, dashboards, and multi-tenancy support.", color: "fuchsia" },
-    { icon: Smartphone, title: "Responsive Design", desc: "Pixel-perfect, mobile-first designs that look stunning on every device and screen size.", color: "pink" },
-    { icon: Zap, title: "Performance Optimization", desc: "Audit and optimize existing sites for Core Web Vitals, speed, and conversion rates.", color: "amber" },
-    { icon: Shield, title: "Secure Architecture", desc: "JWT auth, role-based access, OWASP-compliant APIs, and secure deployment practices.", color: "emerald" },
+    {
+        icon: Globe,
+        title: "Full-Stack Web Development",
+        desc: "Modern web applications built with React, Next.js, FastAPI, and scalable cloud backends. Secure, fast, and production-ready.",
+        color: "violet"
+    },
+    {
+        icon: ShoppingCart,
+        title: "E-commerce Solutions",
+        desc: "High-performance online stores with payment integration, analytics dashboards, and optimized checkout flows.",
+        color: "indigo"
+    },
+    {
+        icon: Database,
+        title: "Big Data Engineering",
+        desc: "Design and build scalable data pipelines using Hadoop, Spark, PySpark, Kafka, and cloud data lakes for real-time and batch processing.",
+        color: "fuchsia"
+    },
+    {
+        icon: BarChart3,
+        title: "Data Analytics & BI",
+        desc: "Transform raw data into actionable insights using Python, SQL, Power BI/Tableau, and interactive dashboards.",
+        color: "cyan"
+    },
+    {
+        icon: Brain,
+        title: "AI & Machine Learning Models",
+        desc: "Build predictive models, recommendation systems, and intelligent automation using ML, Deep Learning, and NLP.",
+        color: "emerald"
+    },
+    {
+        icon: Cpu,
+        title: "AI-Powered Automation",
+        desc: "Integrate AI into web platforms for chatbots, forecasting systems, anomaly detection, and smart decision engines.",
+        color: "amber"
+    }
 ];
 
 const colorMap = {

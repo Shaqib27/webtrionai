@@ -2,7 +2,29 @@ import React, { useState, useEffect } from "react";
 import { api } from "@/api/client";
 import { motion } from "framer-motion";
 
-const CATEGORIES = ["All", "Portfolio", "E-commerce", "Blog", "SaaS", "Corporate", "Custom"];
+const DUMMY_PROJECTS = [
+    {
+        id: "dummy-1",
+        title: "AI Sales Forecasting Platform",
+        category: "AI / ML",
+        description:
+            "Predictive analytics system for retail demand forecasting using machine learning models.",
+    },
+    {
+        id: "dummy-2",
+        title: "E-Commerce Analytics Dashboard",
+        category: "Data Analytics",
+        description:
+            "Interactive business intelligence dashboard for tracking sales, users, and revenue insights.",
+    },
+    {
+        id: "dummy-3",
+        title: "SaaS Project Management Tool",
+        category: "Web Application",
+        description:
+            "Full-stack SaaS platform with authentication, billing, and real-time collaboration.",
+    },
+];
 
 export default function Portfolio() {
     const [projects, setProjects] = useState([]);
@@ -25,15 +47,32 @@ export default function Portfolio() {
         fetchProjects();
     }, []);
 
+    // ✅ Keep only valid projects
+    const validProjects = projects.filter(
+        (p) => p?.title && p?.description
+    );
+
+    // ✅ Use dummy if no real projects
+    const baseProjects =
+        validProjects.length > 0 ? validProjects : DUMMY_PROJECTS;
+
+    // ✅ Dynamic categories
+    const categories = [
+        "All",
+        ...new Set(baseProjects.map((p) => p.category)),
+    ];
+
+    // ✅ Apply filter
     const filtered =
         filter === "All"
-            ? projects
-            : projects.filter((p) => p?.category === filter);
+            ? baseProjects
+            : baseProjects.filter((p) => p.category === filter);
 
     return (
         <div className="min-h-screen bg-[#0a0a0f] text-white pt-28 pb-20 px-6">
             <div className="max-w-7xl mx-auto">
 
+                {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -52,7 +91,7 @@ export default function Portfolio() {
 
                 {/* Filter */}
                 <div className="flex flex-wrap gap-3 justify-center mb-14">
-                    {CATEGORIES.map((cat) => (
+                    {categories.map((cat) => (
                         <button
                             key={cat}
                             onClick={() => setFilter(cat)}
@@ -66,13 +105,10 @@ export default function Portfolio() {
                     ))}
                 </div>
 
+                {/* Content */}
                 {loading ? (
                     <div className="text-center py-20 text-white/30">
                         Loading projects...
-                    </div>
-                ) : filtered.length === 0 ? (
-                    <div className="text-center py-20 text-white/30">
-                        No projects found.
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -101,6 +137,7 @@ export default function Portfolio() {
                         ))}
                     </div>
                 )}
+
             </div>
         </div>
     );

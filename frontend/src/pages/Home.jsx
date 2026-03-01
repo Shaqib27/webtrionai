@@ -10,17 +10,27 @@ import ContactCTA from "../components/home/ContactCTA";
 export default function Home() {
     const [projects, setProjects] = useState([]);
     const [reviews, setReviews] = useState([]);
+    const [stats, setStats] = useState([]);
 
     useEffect(() => {
         const loadHomeData = async () => {
             try {
-                const [p, r] = await Promise.all([
-                    api.get("/projects?featured=true&limit=6"),
-                    api.get("/reviews?approved=true&limit=10")
+                const [p, r, statsRes] = await Promise.all([
+                    api.get("/projects/?limit=6"),
+                    api.get("/reviews/?limit=10"),
+                    api.get("/projects/stats")   // 🔥 NEW
                 ]);
 
                 setProjects(p.data);
                 setReviews(r.data);
+
+                setStats([
+                    { value: statsRes.data.projects, suffix: "+", label: "Projects Delivered" },
+                    { value: statsRes.data.satisfaction, suffix: "%", label: "Client Satisfaction" },
+                    { value: statsRes.data.years, suffix: "+", label: "Years of Expertise" },
+                    { value: statsRes.data.clients, suffix: "+", label: "Happy Clients" },
+                ]);
+
             } catch (error) {
                 console.error("Home data load failed:", error);
             }
@@ -32,7 +42,7 @@ export default function Home() {
     return (
         <div className="min-h-screen bg-[#0a0a0f] text-white">
             <HeroSection />
-            <StatsSection />
+            <StatsSection stats={stats} />
             <ServicesSection />
             <PortfolioPreview projects={projects} />
             <TestimonialsSlider reviews={reviews} />
