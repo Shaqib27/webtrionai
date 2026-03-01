@@ -53,12 +53,14 @@ def update_project_status(project_id: int, status: str, db: Session = Depends(ge
 def get_stats(db: Session = Depends(get_db)):
 
     total_projects = db.query(Project).count()
-    total_clients = db.query(Project.client_email).distinct().count()
     avg_rating = db.query(func.avg(Review.rating)).scalar() or 0
+    happy_clients = db.query(
+        func.count(func.distinct(Review.client_name))
+    ).filter(Review.rating >= 4).scalar()
 
     return {
         "projects": total_projects,
-        "clients": total_clients,
+        "clients": happy_clients,
         "satisfaction": round(avg_rating * 20),  # convert 5-star to percentage
         "years": 2  # static for now
     }

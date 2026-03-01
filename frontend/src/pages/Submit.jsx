@@ -234,7 +234,11 @@ export default function Submit() {
                                 label="Website Type *"
                                 value={form.website_type}
                                 onChange={v => set("website_type", v)}
-                                options={["Web Apps", "E-Commerce", "SaaS", "Data Analytics", "AI / ML", "Corporate"]}
+                                options={[
+                                    "Web Application",
+                                    "AI / ML",
+                                    "Data Analytics"
+                                ]}
                                 error={errors.website_type}
                             />
                             <SelectField
