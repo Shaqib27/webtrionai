@@ -13,22 +13,6 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
-# 🔑 LOGIN ROUTE
-# @router.post("/login")
-# def login(data: dict, db: Session = Depends(get_db)):
-
-#     user = db.query(User).filter(User.email == data["email"]).first()
-
-#     if not user or not verify_password(data["password"], user.password):
-#         raise HTTPException(status_code=401, detail="Invalid credentials")
-
-#     access_token = create_access_token({
-#         "sub": user.email,
-#         "role": user.role
-#     })
-
-#     return {"access_token": access_token}
-
 @router.post("/login")
 def login(data: dict, db: Session = Depends(get_db)):
 
