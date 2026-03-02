@@ -34,7 +34,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import Base, engine, SessionLocal
 from app.models.user import User
-from app.core.security import get_password_hash
+from app.core.security import hash_password
 from app.routes import projects, reviews, requests, admin, auth
 import os
 
@@ -59,7 +59,7 @@ def create_admin():
         admin = User(
             full_name="Saqib Hussain",
             email=admin_email,
-            password=get_password_hash(admin_password),
+            password=hash_password(admin_password),
             role="admin"
         )
         db.add(admin)
