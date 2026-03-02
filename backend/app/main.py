@@ -59,7 +59,7 @@ def create_admin():
         admin = User(
             full_name="Saqib Hussain",
             email=admin_email,
-            password=hash_password(admin_password),
+            password_hash=hash_password(admin_password),
             role="admin"
         )
         db.add(admin)
