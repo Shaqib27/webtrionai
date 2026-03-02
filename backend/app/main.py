@@ -74,21 +74,21 @@ def create_admin():
 def startup_event():
     create_admin()
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["https://webtrionai.vercel.app"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origins=["https://webtrionai.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origin_regex=r"https://.*\.vercel\.app",
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 
 app.include_router(projects.router)
