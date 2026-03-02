@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-
+// const API_URL = import.meta.env.VITE_API_URL;
+const API_URL =
+    import.meta.env.MODE === "development"
+        ? "http://localhost:8001"
+        : import.meta.env.VITE_API_URL;
 export default function Reviews() {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -19,7 +23,7 @@ export default function Reviews() {
     useEffect(() => {
         const loadReviews = async () => {
             try {
-                const res = await fetch("http://localhost:8001/reviews/");
+                const res = await fetch(`${API_URL}/reviews/`);
                 if (!res.ok) throw new Error("Failed to fetch reviews");
                 const data = await res.json();
                 setReviews(data);
@@ -56,7 +60,7 @@ export default function Reviews() {
         setSubmitting(true);
 
         try {
-            const res = await fetch("http://localhost:8001/reviews/", {
+            const res = await fetch(`${API_URL}/reviews/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form)
