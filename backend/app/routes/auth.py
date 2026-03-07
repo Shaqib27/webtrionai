@@ -1,3 +1,5 @@
+# app/routers/auth.py
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
@@ -13,22 +15,17 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
+# ==============================
+# 🔐 Login
+# ==============================
 @router.post("/login")
 def login(data: dict, db: Session = Depends(get_db)):
-
-    print("Received:", data)
-
     user = db.query(User).filter(User.email == data["email"]).first()
-
-    print("User found:", user)
 
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
 
-    print("Stored hashed password:", user.password_hash)
-
     if not verify_password(data["password"], user.password_hash):
-        print("Password mismatch")
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     access_token = create_access_token({
@@ -36,10 +33,12 @@ def login(data: dict, db: Session = Depends(get_db)):
         "role": user.role
     })
 
-    return {"access_token": access_token}
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
-# 👤 GET CURRENT USER
+# ==============================
+# 👤 Get Current User (dependency)
+# ==============================
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
@@ -67,7 +66,9 @@ def get_current_user(
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-# 🧾 /auth/me
+# ==============================
+# 🧾 Me endpoint
+# ==============================
 @router.get("/me")
 def get_me(user: User = Depends(get_current_user)):
     return {
