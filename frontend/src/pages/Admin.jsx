@@ -154,7 +154,7 @@ export default function Admin() {
       `}</style>
 
             {/* HEADER */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "28px 0 32px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "80px 0 32px" }}>
                 <div>
                     <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0, letterSpacing: "-0.5px" }}>Admin Dashboard</h1>
                     <p style={{ color: "rgba(255,255,255,0.4)", marginTop: 6, fontSize: 14 }}>Manage projects, requests and reviews</p>
