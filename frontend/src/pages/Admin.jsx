@@ -238,7 +238,7 @@ export default function Admin() {
       `}</style>
 
             {/* HEADER */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: isMobile ? "24px 0 20px" : "88px 0 32px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: isMobile ? "70px 0 20px" : "88px 0 32px" }}>
                 <div>
                     <h1 style={{ fontSize: isMobile ? 22 : 32, fontWeight: 700, letterSpacing: "-0.5px" }}>Admin Dashboard</h1>
                     <p style={{ color: "rgba(255,255,255,0.4)", marginTop: 5, fontSize: 13 }}>Manage projects, requests and reviews</p>
