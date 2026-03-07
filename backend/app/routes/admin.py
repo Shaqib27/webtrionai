@@ -78,30 +78,3 @@ def update_revenue(request_id: int, revenue: int, db: Session = Depends(get_db))
 # ==============================
 # 👤 Create Admin (run once)
 # ==============================
-@router.get("/create-admin")
-def create_admin_route():
-    from app.core.database import SessionLocal
-    from app.models.user import User
-    from app.core.security import hash_password
-
-    ADMIN_EMAIL = "shaqib246@gmail.com"
-    ADMIN_PASSWORD = "Hussain786@#"
-
-    db = SessionLocal()
-
-    existing = db.query(User).filter(User.email == ADMIN_EMAIL).first()
-
-    if not existing:
-        admin = User(
-            full_name="Saqib Hussain",
-            email=ADMIN_EMAIL,
-            password_hash=hash_password(ADMIN_PASSWORD),
-            role="admin"
-        )
-        db.add(admin)
-        db.commit()
-        db.close()
-        return {"message": "Admin created successfully"}
-
-    db.close()
-    return {"message": "Admin already exists"}
