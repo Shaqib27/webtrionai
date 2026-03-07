@@ -3,9 +3,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from typing import List
 
 from app.core.database import get_db
 from app.models.request import ClientRequest
+from app.schemas.request import RequestResponse
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -36,7 +38,7 @@ def get_stats(db: Session = Depends(get_db)):
 # ==============================
 # 📋 Get All Requests
 # ==============================
-@router.get("/requests")
+@router.get("/requests", response_model=List[RequestResponse])  # ✅ added
 def get_all_requests(db: Session = Depends(get_db)):
     return db.query(ClientRequest).all()
 
@@ -82,8 +84,8 @@ def create_admin_route():
     from app.models.user import User
     from app.core.security import hash_password
 
-    ADMIN_EMAIL = "shaqib246@gmail.com"   # ✅ Change to your real email
-    ADMIN_PASSWORD = "Hussain786@#"        # ✅ Your password
+    ADMIN_EMAIL = "shaqib246@gmail.com"
+    ADMIN_PASSWORD = "Hussain786@#"
 
     db = SessionLocal()
 
